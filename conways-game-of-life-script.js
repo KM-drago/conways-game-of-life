@@ -1,6 +1,15 @@
-document.addEventListener("load", gridDraw());
+let gridArr = [];
+
+const gridColors = new Map([
+  [0, "bg-teal-300"],
+  [1, "bg-teal-950"],
+]);
+
+let gSizex = 0;
 
 let leftMouseDown = false;
+
+document.addEventListener("load", init());
 
 document.addEventListener("mousedown", function (event) {
   if (event.button === 0) {
@@ -14,8 +23,10 @@ document.addEventListener("mouseup", function (event) {
   }
 });
 
-function gridDraw() {
-  let gSizex = document.getElementById("gSizex").value;
+function init() {
+  gridArr = [];
+
+  gSizex = document.getElementById("gSizex").value;
 
   if (gSizex > 100) {
     gSizex = 100;
@@ -23,13 +34,24 @@ function gridDraw() {
   document.getElementById("gSizex").value = gSizex;
   document.getElementById("gSizey").value = gSizex;
 
+  for (let i = 0; i < gSizex; i++) {
+    let gridRow = [];
+    for (let j = 0; j < gSizex; j++) {
+      gridRow.push(0);
+    }
+    gridArr.push(gridRow);
+  }
+  gridDraw(gridArr);
+}
+
+function gridDraw(arr) {
   let gridCanvas = document.getElementById("gridCanvas");
 
   let table = "";
   for (let i = 0; i < gSizex; i++) {
     let tableRow = "<tr>";
     for (let j = 0; j < gSizex; j++) {
-      tableRow += `<td id="${i}-${j}" class="border-solid border border-zinc-950 bg-teal-300" onclick="clickCellColor(this.id)" onmouseover="dragCellColor(this.id)"></td>`;
+      tableRow += `<td id="${i}-${j}" class="border-solid border border-zinc-950 ${gridColors.get(arr[i][j])}" onclick="clickCellColor(this.id)" onmouseover="dragCellColor(this.id)"></td>`;
     }
     tableRow += "<tr>";
     table += tableRow;
@@ -40,16 +62,22 @@ function gridDraw() {
 
 function dragCellColor(id) {
   if (leftMouseDown) {
-    let rc = document.getElementById(id);
-    rc.classList.remove("bg-teal-300");
-    rc.classList.add("bg-teal-950");
+    let index = String(id).split("-");
+    gridArr[index[0]][index[1]] = 1;
+    changeColor(id);
   }
 }
 
 function clickCellColor(id) {
+  let index = String(id).split("-");
+  gridArr[index[0]][index[1]] = 1;
+  changeColor(id);
+}
+
+function changeColor(id) {
   let rc = document.getElementById(id);
-  rc.classList.remove("bg-teal-300");
-  rc.classList.add("bg-teal-950");
+  rc.classList.remove(gridColors.get(0));
+  rc.classList.add(gridColors.get(1));
 }
 
 function start() {

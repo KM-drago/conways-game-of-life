@@ -24,7 +24,7 @@
       <div>
         <form class="max-w-fit mx-auto mt-16 mb-5">
           <label class="text-xl text-cyan-100 mr-4" ="fname">Grid Size</label>
-          <input class="w-12 rounded-lg text-center align-middle text-xl" type="number" id="gSizex" value="10" onkeyup="gridDraw()" /> <mult class="text-xl text-cyan-100">*</mult>
+          <input class="w-12 rounded-lg text-center align-middle text-xl" type="number" id="gSizex" value="10" onkeyup="init()" /> <mult class="text-xl text-cyan-100">*</mult>
           <input class="w-12 rounded-lg text-center align-middle text-xl bg-neutral-300" type="number" value="10" id="gSizey" readonly />
         </form>
       </div>
@@ -36,6 +36,7 @@
       <div class="max-w-fit mx-auto mt-5">
         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="start()">Start</button>
         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="stop()">Stop</button>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick="window.location.reload()">clear</button>
       </div>
     </div>
     <script src="conways-game-of-life-script.js"></script>
