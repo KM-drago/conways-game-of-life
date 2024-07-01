@@ -15,6 +15,7 @@ let intervalStarted = false;
 let timeInterval = 500;
 let speedBumpVal = 50;
 
+let startBtn = document.getElementById("startBtn");
 let slowDownBtn = document.getElementById("slowDownBtn");
 let speedUpBtn = document.getElementById("speedUpBtn");
 
@@ -117,6 +118,7 @@ function slowDown() {
 function start() {
   btnDisable(slowDownBtn);
   btnDisable(speedUpBtn);
+  btnDisable(startBtn);
   if (!intervalStarted) {
     interval = setInterval(gridValUpdate, timeInterval);
   }
@@ -187,6 +189,7 @@ async function getNeighbourActive(i, j) {
 function stop() {
   btnEnable(slowDownBtn);
   btnEnable(speedUpBtn);
+  btnEnable(startBtn);
   clearInterval(interval);
   intervalStarted = false;
 }
