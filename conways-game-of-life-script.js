@@ -9,6 +9,15 @@ let gSizex = 0;
 
 let leftMouseDown = false;
 
+let interval;
+let intervalStarted = false;
+
+let timeInterval = 500;
+let speedBumpVal = 50;
+
+let slowDownBtn = document.getElementById("slowDownBtn");
+let speedUpBtn = document.getElementById("speedUpBtn");
+
 document.addEventListener("load", init());
 
 document.addEventListener("mousedown", function (event) {
@@ -92,14 +101,40 @@ function changeColorReverse(id) {
   rc.classList.add(gridColors.get(0));
 }
 
-let interval;
-let intervalStarted = false;
+function speedUp() {
+  console.log("GG");
+  if (timeInterval > 0) {
+    timeInterval -= speedBumpVal;
+  }
+}
+
+function slowDown() {
+  if (timeInterval < 1500) {
+    timeInterval += speedBumpVal;
+  }
+}
 
 function start() {
+  btnDisable(slowDownBtn);
+  btnDisable(speedUpBtn);
   if (!intervalStarted) {
-    interval = setInterval(gridValUpdate, 100);
+    interval = setInterval(gridValUpdate, timeInterval);
   }
   intervalStarted = true;
+}
+
+function btnDisable(btn) {
+  btn.disabled = true;
+  btn.classList.add("opacity-50");
+  btn.classList.add("cursor-not-allowed");
+  btn.classList.remove("hover:bg-blue-700");
+}
+
+function btnEnable(btn) {
+  btn.disabled = false;
+  btn.classList.remove("opacity-50");
+  btn.classList.remove("cursor-not-allowed");
+  btn.classList.add("hover:bg-blue-700");
 }
 
 async function gridValUpdate() {
@@ -150,6 +185,8 @@ async function getNeighbourActive(i, j) {
 }
 
 function stop() {
+  btnEnable(slowDownBtn);
+  btnEnable(speedUpBtn);
   clearInterval(interval);
   intervalStarted = false;
 }
