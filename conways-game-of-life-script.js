@@ -44,7 +44,7 @@ function init() {
   gridDraw(gridArr);
 }
 
-function gridDraw(arr) {
+async function gridDraw(arr) {
   let gridCanvas = document.getElementById("gridCanvas");
 
   let table = "";
@@ -70,8 +70,14 @@ function dragCellColor(id) {
 
 function clickCellColor(id) {
   let index = String(id).split("-");
-  gridArr[index[0]][index[1]] = 1;
-  changeColor(id);
+
+  if (gridArr[index[0]][index[1]] == 1) {
+    gridArr[index[0]][index[1]] = 0;
+    changeColorReverse(id);
+  } else {
+    gridArr[index[0]][index[1]] = 1;
+    changeColor(id);
+  }
 }
 
 function changeColor(id) {
@@ -80,10 +86,70 @@ function changeColor(id) {
   rc.classList.add(gridColors.get(1));
 }
 
+function changeColorReverse(id) {
+  let rc = document.getElementById(id);
+  rc.classList.remove(gridColors.get(1));
+  rc.classList.add(gridColors.get(0));
+}
+
+let interval;
+let intervalStarted = false;
+
 function start() {
-  console.log("RUN");
+  if (!intervalStarted) {
+    interval = setInterval(gridValUpdate, 100);
+  }
+  intervalStarted = true;
+}
+
+async function gridValUpdate() {
+  let newGrid = [];
+  for (let i = 0; i < gSizex; i++) {
+    let newGridRow = [];
+    for (let j = 0; j < gSizex; j++) {
+      let neighbourActive = await getNeighbourActive(i, j);
+
+      if (gridArr[i][j] == 1 && (neighbourActive == 2 || neighbourActive == 3)) {
+        newGridRow.push(1);
+      } else if (gridArr[i][j] == 0 && neighbourActive == 3) {
+        newGridRow.push(1);
+      } else {
+        newGridRow.push(0);
+      }
+    }
+    newGrid.push(newGridRow);
+  }
+  gridArr = newGrid;
+  await gridDraw(gridArr);
+}
+
+async function getNeighbourActive(i, j) {
+  // i-1
+  let valI_1 = Math.abs((i - 1) % gSizex);
+  //i+1
+  let valI1 = Math.abs((i + 1) % gSizex);
+
+  //j-1
+  let valJ_1 = Math.abs((j - 1) % gSizex);
+  //j+1
+  let valJ1 = Math.abs((j + 1) % gSizex);
+
+  let neighbourActive = 0;
+
+  gridArr[valI_1][valJ_1] ? (neighbourActive += 1) : neighbourActive;
+  gridArr[valI_1][j] ? (neighbourActive += 1) : neighbourActive;
+  gridArr[valI_1][valJ1] ? (neighbourActive += 1) : neighbourActive;
+  gridArr[i][valJ_1] ? (neighbourActive += 1) : neighbourActive;
+
+  gridArr[i][valJ1] ? (neighbourActive += 1) : neighbourActive;
+  gridArr[valI1][valJ_1] ? (neighbourActive += 1) : neighbourActive;
+  gridArr[valI1][j] ? (neighbourActive += 1) : neighbourActive;
+  gridArr[valI1][valJ1] ? (neighbourActive += 1) : neighbourActive;
+
+  return neighbourActive;
 }
 
 function stop() {
-  console.log("STOP");
+  clearInterval(interval);
+  intervalStarted = false;
 }
